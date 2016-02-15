@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Sudoku</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_main">MainActivity</string>
+
+    <string name="normal_sudoku">普通数独</string>
+    <string name="harder_sudoku">加强数独</string>
+    <string name="fight_sudoku">闯关数独</string>
+</resources>
