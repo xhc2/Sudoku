@@ -6,4 +6,5 @@
     <string name="normal_sudoku">普通数独</string>
     <string name="harder_sudoku">加强数独</string>
     <string name="fight_sudoku">闯关数独</string>
+    <string name="title_activity_game">GameActivity</string>
 </resources>

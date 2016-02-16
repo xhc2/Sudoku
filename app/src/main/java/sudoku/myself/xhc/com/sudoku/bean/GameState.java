@@ -1,4 +1,4 @@
-package sudoku.myself.xhc.com.sudoku.util;
+package sudoku.myself.xhc.com.sudoku.bean;
 
 /**
  *
@@ -6,5 +6,7 @@ package sudoku.myself.xhc.com.sudoku.util;
  * 一些游戏状态
  */
 public class GameState {
+
+    public static final int Nothing = 1;
 
 }
