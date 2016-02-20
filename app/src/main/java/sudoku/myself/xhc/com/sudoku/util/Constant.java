@@ -1,5 +1,7 @@
 package sudoku.myself.xhc.com.sudoku.util;
 
+import android.graphics.Color;
+
 /**
  * Created by xhc on 2016/2/15.
  * <p/>
@@ -13,6 +15,6 @@ package sudoku.myself.xhc.com.sudoku.util;
  */
 public class Constant {
 
-    public static final int Color[] = new int[]{0xffffff, 0xFF0000, 0xFFA500, 0xFFFF00, 0x00FF00, 0x007FFF, 0x0000FF, 0x8B00FF, 0x000000};
+    public static final int Color[] = new int[]{0xAAFFFFFF, 0xAAFF0000, 0xAAFFA500, 0xAAFFFF00, 0xAA00FF00, 0xAA007FFF, 0xAA0000FF, 0xAA8B00FF, 0xAADA6DDA};
 
 }

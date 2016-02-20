@@ -8,6 +8,7 @@ import java.util.List;
  * Created by xhc on 2016/2/15.
  * 棋盘上的每一个点的数据结构
  * 使用数组避免过多的自动拆装箱操作
+ *
  * 其中的boolean类型的flag false都表示没有被挖，true表示被挖掉
  *
  * 为了计算方便color中保存的数值还是十进制中的1-9，在界面上转换的时候猜转到对应的色值
@@ -24,6 +25,10 @@ public class Node {
     private int userColor = 0 ;
     private int[] candidateColor = new int[9];
 
+    //记录候选区中的数字个数
+    private int countNum = 0 ;
+    //记录候选区中的颜色的个数
+    private int countColor = 0;
     //清除一切状态
     public void clear(){
         numFlag = false;
@@ -36,6 +41,45 @@ public class Node {
             candidateNum[i] = 0 ;
             candidateColor[i] = 0 ;
         }
+    }
+
+    public void putCandicateNum(int num){
+        if(num < 1 || num > 9) return ;
+        candidateNum[num - 1] = num;
+        countNum ++;
+    }
+
+    public void putCandicateColor(int color){
+        if(color < 1 || color > 9) return ;
+        candidateColor[color - 1] = color;
+        countColor ++ ;
+    }
+
+    public void removeCandicateNum(int num){
+        if(num < 1 || num > 9) return ;
+        candidateNum[num - 1] = 0;
+        countNum --;
+    }
+
+    public void removeCandicateColor(int color){
+        if(color < 1 || color > 9) return ;
+        candidateColor[color - 1] = 0;
+        countColor -- ;
+    }
+    /**
+     * 判断是否有候选数
+     * @return true有， false 没有
+     */
+    public boolean haveCandicateNum(){
+        return countNum > 0;
+    }
+
+    /**
+     * 判断是否有候选颜色
+     * @return
+     */
+    public boolean haveCandicateColor(){
+        return countColor > 0;
     }
 
     public boolean isNumFlag() {
@@ -83,6 +127,8 @@ public class Node {
     }
 
     public void setCandidateNum(int[] candidateNum) {
+        //测试
+        countNum = 9 ;
         this.candidateNum = candidateNum;
     }
 
@@ -99,7 +145,23 @@ public class Node {
     }
 
     public void setCandidateColor(int[] candidateColor) {
+        countColor = 9;
         this.candidateColor = candidateColor;
     }
 
+    @Override
+    public String toString() {
+        return "Node{" +
+                "numFlag=" + numFlag +
+                ", systemNum=" + systemNum +
+                ", userNum=" + userNum +
+                ", candidateNum=" + Arrays.toString(candidateNum) +
+                ", colorFlag=" + colorFlag +
+                ", systemColor=" + systemColor +
+                ", userColor=" + userColor +
+                ", candidateColor=" + Arrays.toString(candidateColor) +
+                ", countNum=" + countNum +
+                ", countColor=" + countColor +
+                '}';
+    }
 }

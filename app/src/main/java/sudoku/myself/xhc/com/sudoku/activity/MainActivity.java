@@ -1,8 +1,10 @@
 package sudoku.myself.xhc.com.sudoku.activity;
 
+import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -18,7 +20,7 @@ import sudoku.myself.xhc.com.sudoku.fragment.HarderSudokuFragment;
 import sudoku.myself.xhc.com.sudoku.fragment.NormalSudokuFragment;
 import sudoku.myself.xhc.com.sudoku.mywidget.MyIndicator;
 
-public class MainActivity extends AppCompatActivity  {
+public class MainActivity extends FragmentActivity {
     private MyPageAdapter adapter ;
     List<Fragment> listFragment = new ArrayList<Fragment>();
     String[] strTitle = new String[3];
