@@ -16,6 +16,7 @@ import java.util.Calendar;
 import sudoku.myself.xhc.com.sudoku.bean.Node;
 import sudoku.myself.xhc.com.sudoku.debugutil.util.DensityUtils;
 import sudoku.myself.xhc.com.sudoku.util.Constant;
+import sudoku.myself.xhc.com.sudoku.util.Sudoku;
 
 
 /**
@@ -42,8 +43,6 @@ public class SudokuMap extends View {
     private float candicateWidth;
     private Node choiseNode = null;
     private float choiseX , choiseY ;
-    //测试数据
-    private int[] test = new int[]{1, 4, 6, 2};
 
     private Node[][] nodes = new Node[9][9];
 
@@ -70,41 +69,9 @@ public class SudokuMap extends View {
         textPaint = new Paint();
         textPaint.setAntiAlias(true);
         textPaint.setStyle(Paint.Style.FILL);
-//        lineWidth = DensityUtils.dip2px(context, 3);
         dp_1 = DensityUtils.dip2px(context, 1);
-
-        for (int i = 0; i < 9; ++i) {
-            for (int j = 0; j < 9; ++j) {
-                nodes[i][j] = new Node();
-                nodes[i][j].setSystemColor(7);
-                if (i % 2 == 0) {
-                    nodes[i][j].setNumFlag(true);
-                    nodes[i][j].setUserNum(5);
-
-                    nodes[i][j].setColorFlag(true);
-                    nodes[i][j].setUserColor(5);
-                    continue;
-                }
-                if (j % 3 == 0) {
-                    nodes[i][j].setNumFlag(true);
-                    int[] tests = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9};
-                    nodes[i][j].setCandidateNum(tests);
-
-                    nodes[i][j].setColorFlag(true);
-                    nodes[i][j].setCandidateColor(tests);
-                    continue;
-                }
-                if (j % 7 == 0) {
-                    nodes[i][j].setNumFlag(false);
-                    nodes[i][j].setSystemNum(9);
-
-                    nodes[i][j].setColorFlag(false);
-                    nodes[i][j].setSystemColor(9);
-                    continue;
-                }
-
-            }
-        }
+        //测试
+        nodes = Sudoku.getInstance().getGameCombinationSudoku(5);
 
     }
 
@@ -168,18 +135,25 @@ public class SudokuMap extends View {
             //有颜色数独
             if (y > height - numGridWidth) {
                 //数字键盘上
+                clickNumKeyBoard(x,y);
+
             } else if (y < height - numGridWidth && y > height - 2 * numGridWidth) {
                 //颜色键盘上
+                clickColorKeyBoard(x,y);
             } else if (y < height - 2 * numGridWidth && y > height - 3 * numGridWidth) {
                 //数字候选区上
+                clickCandicateNum(x , y );
             } else if (y < height - 3 * numGridWidth && y > height - 4 * numGridWidth) {
                 //颜色候选区上
+                clickCandicateColor(x , y );
             }
         } else {
             if (y > height - numGridWidth) {
                 //数字键盘上
+                clickNumKeyBoard(x,y);
             } else if (y < height - numGridWidth && y > height - 2 * numGridWidth) {
                 //数字候选区
+                clickCandicateNum(x , y );
             }
         }
 
@@ -187,7 +161,84 @@ public class SudokuMap extends View {
     }
 
     /**
-     *
+     * 单击数字键盘就是往候选区加数字
+     */
+    private void clickNumKeyBoard(float x , float y){
+        if(y < height - numGridWidth) return ;
+        if(choiseNode == null)return ;
+        int num = (int)Math.ceil(x / numGridWidth);
+        choiseNode.putCandicateNum(num);
+    }
+
+    /**
+     * 点击颜色键盘 ， 加到候选数中
+     * @param x 坐标
+     * @param y 坐标
+     */
+    private void clickColorKeyBoard(float x , float y){
+        if(gameFlag) return ;
+        if(choiseNode == null) return ;
+        if(y < height - 2 * numGridWidth || y > height - numGridWidth) return ;
+        int color = (int)Math.ceil(x / numGridWidth);
+        choiseNode.putCandicateColor(color);
+    }
+
+    /**
+     * @param x 坐标
+     * @param y 坐标
+     * 点击候选区的数字就是直接是确认的数字
+     */
+    private void clickCandicateNum(float x , float y){
+        if (choiseNode == null) return ;
+        int where = (int)Math.ceil(x / numGridWidth) ;
+        if(where > choiseNode.getCountNum()) return ;
+
+        int num = 0;
+        //找到候选数是哪个
+        for(int i = 0 ;i < choiseNode.getCandidateNum().length ; ++ i){
+            if(choiseNode.getCandidateNum()[i] == 0 ) continue;
+            where -- ;
+            if(where == 0){
+                num = choiseNode.getCandidateNum()[i];
+            }
+        }
+        if(num < 1 || num > 9) return ;
+        if(!gameFlag){
+            //有颜色
+            if(y < height - 3 * numGridWidth || y > height - 2 * numGridWidth) return ;
+        }
+        else{
+            if(y < height - 2 * numGridWidth || y > height - numGridWidth) return ;
+        }
+        choiseNode.setUserNum(num);
+    }
+
+    /**
+     * 点击候选区的颜色
+     * @param x
+     * @param y
+     */
+    private void clickCandicateColor(float x , float y){
+        if(y < height - 4 * numGridWidth || y > height - 3 * numGridWidth) return ;
+        if(choiseNode == null) return ;
+        int where = (int)Math.ceil(x / numGridWidth) ;
+        if(where > choiseNode.getCountColor()) return ;
+        int color = 0;
+        //找到候选数是哪个
+        for(int i = 0 ;i < choiseNode.getCandidateColor().length ; ++ i){
+            if(choiseNode.getCandidateColor()[i] == 0 ) continue;
+            where -- ;
+            if(where == 0){
+                color = choiseNode.getCandidateColor()[i];
+            }
+        }
+        if(color < 1 || color > 9) return ;
+        choiseNode.setUserColor(color);
+
+    }
+
+    /**
+     * 计算点击到的哪个node
      * @param x 在屏幕上的坐标
      * @param y 坐标
      */
@@ -209,11 +260,11 @@ public class SudokuMap extends View {
         drawLineMap(canvas);
         drawKeyBoard(canvas);
 
-        drawCandidateColor(canvas, test);
-        drawCandidateNum(canvas, test, gameFlag);
-
-        testQiPan(canvas);
+        drawChessBoard(canvas);
         drawChoiseNodeHightLight(canvas);
+
+        drawCandidateNum(canvas);
+        drawCandidateColor(canvas);
     }
 
     //画一个被选择个格子
@@ -223,12 +274,14 @@ public class SudokuMap extends View {
         paint.setColor(Color.parseColor("#000000"));
         paint.setStyle(Paint.Style.STROKE);
 
-        canvas.drawRect(rectF,paint);
+        canvas.drawRect(rectF, paint);
 
     }
 
-    //测试函数可以删除
-    private void testQiPan(Canvas canvas) {
+    /**
+     * 绘画棋盘
+     */
+    private void drawChessBoard(Canvas canvas) {
         float x = 0;
         float y = 0;
         for (int i = 0; i < 9; ++i) {
@@ -349,11 +402,12 @@ public class SudokuMap extends View {
      * 画候选区的数字
      * flag 是判断是否是有颜色的数独
      */
-    private void drawCandidateNum(Canvas canvas, int[] candidates, boolean flag) {
-
+    private void drawCandidateNum(Canvas canvas ) {
+        if(choiseNode == null) return;
+        int[] candidates =choiseNode.getCandidateNum();
         float x = dp_1;
         float y = height - 2 * numGridWidth;
-        if (flag) {
+        if (gameFlag) {
             for (int i = 0; i < candidates.length; ++i) {
                 if (candidates[i] == 0) {
                     continue;
@@ -375,7 +429,10 @@ public class SudokuMap extends View {
 
     }
 
-    private void drawCandidateColor(Canvas canvas, int[] candidates) {
+    private void drawCandidateColor(Canvas canvas ) {
+        if(gameFlag) return ;
+        if (choiseNode == null) return;
+        int[] candidates = choiseNode.getCandidateColor();
         float x = dp_1;
         float y = height - 4 * numGridWidth;
         for (int i = 0; i < candidates.length; ++i) {

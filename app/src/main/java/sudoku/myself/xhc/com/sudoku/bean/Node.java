@@ -66,6 +66,15 @@ public class Node {
         candidateColor[color - 1] = 0;
         countColor -- ;
     }
+
+    //获取有几个候选区的数字
+    public int getCountNum(){
+        return countNum;
+    }
+
+    public int getCountColor(){
+        return countColor;
+    }
     /**
      * 判断是否有候选数
      * @return true有， false 没有

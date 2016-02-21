@@ -20,52 +20,11 @@ import sudoku.myself.xhc.com.sudoku.util.Sudoku;
 public class NormalSudokuFragment extends Fragment implements View.OnClickListener{
 
     private TextView tv ;
-    String str ="";
-
-    String str2 = "";
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Node[][] nodeArray = Sudoku.getInstance().getGameCombinationSudoku(5);
-        Sudoku sudoku = Sudoku.getInstance();
-        Log.e("xhc",sudoku +"  1");
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Sudoku sudoku = Sudoku.getInstance();
-                Log.e("xhc",sudoku.toString() +"  2");
-            }
-        }).start();
-
-        for(int i = 0 ;i < nodeArray.length ; ++ i){
-            for(int j = 0 ;j < nodeArray[i].length ; ++ j){
-
-                if(nodeArray[i][j].isNumFlag()){
-                    str2 += "0";
-                    str2 +=" ";
-                }
-                else{
-                    str2 += nodeArray[i][j].getSystemNum();
-                    str2 +=" ";
-                }
-
-                if(nodeArray[i][j].isColorFlag()){
-                    str += "0";
-                    str +=" ";
-                }
-                else{
-                    str += nodeArray[i][j].getSystemColor();
-                    str +=" ";
-                }
-
-
-
-            }
-            str += "\n";
-            str2 += "\n";
-
-        }
+        startActivity(new Intent(getActivity(), GameActivity.class));
 
 
     }
@@ -79,11 +38,6 @@ public class NormalSudokuFragment extends Fragment implements View.OnClickListen
     @Override
     public void onViewCreated(View view,  Bundle savedInstanceState) {
 
-        tv = (TextView)view.findViewById(R.id.test);
-        str += "\n";str += "\n";str += "\n";
-        str += str2;
-        tv.setText(str);
-        tv.setOnClickListener(this);
 
     }
 
@@ -91,7 +45,7 @@ public class NormalSudokuFragment extends Fragment implements View.OnClickListen
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.test:
-                startActivity(new Intent(getActivity(), GameActivity.class));
+
                 break;
 
         }
