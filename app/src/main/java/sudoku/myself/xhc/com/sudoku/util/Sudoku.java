@@ -638,6 +638,7 @@ public class Sudoku {
 
           /* 同行比较 */
         for (int j = 0; j < array.length; j++) {
+            if(j==y)continue;
             if (array[x][j].isColorFlag()) {
                 if (array[x][j].getUserColor() == color) {
                     return false;
@@ -652,6 +653,7 @@ public class Sudoku {
 
          /* 同列比较 */
         for (int i = 0; i < array.length; i++) {
+            if(i == x)continue;
             if (array[i][y].isColorFlag()) {
                 if (array[i][y].getUserColor() == color) {
                     return false;
@@ -672,6 +674,7 @@ public class Sudoku {
         for (int i = whereX * sqrtLength; i < whereX * sqrtLength + sqrtLength; i++) {
             for (int j = whereY * sqrtLength; j < whereY * sqrtLength
                     + sqrtLength; j++) {
+                if(i == x && j == y)continue;
                 if (array[i][j].isColorFlag()) {
                     if (array[i][j].getUserColor() == color) {
                         return false;
