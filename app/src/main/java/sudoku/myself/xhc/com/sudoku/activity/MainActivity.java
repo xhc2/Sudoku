@@ -22,8 +22,8 @@ import sudoku.myself.xhc.com.sudoku.mywidget.MyIndicator;
 
 public class MainActivity extends FragmentActivity {
     private MyPageAdapter adapter ;
-    List<Fragment> listFragment = new ArrayList<Fragment>();
-    String[] strTitle = new String[3];
+    private List<Fragment> listFragment = new ArrayList<Fragment>();
+    private String[] strTitle = new String[3];
     private ViewPager pager;
     private MyIndicator indicator;
     @Override

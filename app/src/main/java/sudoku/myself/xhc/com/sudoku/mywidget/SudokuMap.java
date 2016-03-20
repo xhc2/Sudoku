@@ -15,6 +15,7 @@ import java.util.Calendar;
 
 import sudoku.myself.xhc.com.sudoku.bean.Node;
 import sudoku.myself.xhc.com.sudoku.debugutil.util.DensityUtils;
+import sudoku.myself.xhc.com.sudoku.inter.IsWinCallBack;
 import sudoku.myself.xhc.com.sudoku.util.Constant;
 import sudoku.myself.xhc.com.sudoku.util.Sudoku;
 
@@ -35,6 +36,8 @@ public class SudokuMap extends View {
     //线的长度，和粗细程度
     private int lineLength;
 
+    //是否有检错机制 true是检测
+    private boolean checkFlag = true;
     private int dp_1;
 
     //一个数字格子的宽度 正方形
@@ -43,10 +46,10 @@ public class SudokuMap extends View {
     private float candicateWidth;
     private Node choiseNode = null;
     private float choiseX , choiseY ;
-
+    //判断是否赢的唯一标志
+    private boolean winFlag = false;
     private Node[][] nodes = new Node[9][9];
-
-
+    private Sudoku sudoku;
     public SudokuMap(Context context) {
         this(context, null);
     }
@@ -54,7 +57,6 @@ public class SudokuMap extends View {
     public SudokuMap(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
-
 
     public SudokuMap(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
@@ -71,7 +73,8 @@ public class SudokuMap extends View {
         textPaint.setStyle(Paint.Style.FILL);
         dp_1 = DensityUtils.dip2px(context, 1);
         //测试
-        nodes = Sudoku.getInstance().getGameCombinationSudoku(5);
+        sudoku = Sudoku.getInstance();
+        nodes = sudoku.getGameCombinationSudoku(5);
 
     }
 
@@ -98,33 +101,93 @@ public class SudokuMap extends View {
     }
 
 
+
     private void longPress(float x, float y) {
 
         if (y < numGridWidth * 9) {
-            //点击到棋盘上
+            //点击到棋盘上  先删掉颜色然后删掉数字
+            calculateNode(x, y);
+            if(choiseNode.getUserNum() != 0){
+                deleDecidedNum();
+            }
+            else if(choiseNode.getUserColor() != 0){
+                deleDecidedColor();
+            }
+
         }
         if (!gameFlag) {
             //有颜色数独
             if (y > height - numGridWidth) {
                 //数字键盘上
+                if(choiseNode != null){
+                    int num = (int)Math.ceil(x / numGridWidth);
+                    choiseNode.setUserNum(num);
+                    if(isWin()){
+                        Log.e("xhc","颜色数独和数字数独都赢了");
+                        winFlag = true;
+                    }
+                }
             } else if (y < height - numGridWidth && y > height - 2 * numGridWidth) {
                 //颜色键盘上
+                if(choiseNode != null){
+                    int color = (int)Math.ceil(x / numGridWidth);
+                    choiseNode.setUserColor(color);
+                    if(isWin()){
+                        Log.e("xhc","颜色数独和数字数独都赢了");
+                        winFlag = true;
+                    }
+                }
             } else if (y < height - 2 * numGridWidth && y > height - 3 * numGridWidth) {
                 //数字候选区上
+                delCandicateNum(x,y);
             } else if (y < height - 3 * numGridWidth && y > height - 4 * numGridWidth) {
                 //颜色候选区上
+                delCandicateColor(x,y);
             }
         } else {
             if (y > height - numGridWidth) {
                 //数字键盘上
+
+                if(choiseNode != null){
+                    int num = (int)Math.ceil(x / numGridWidth);
+                    choiseNode.setUserNum(num);
+                    if(isWin()){
+                        Log.e("xhc","数字数独都赢了");
+                        winFlag = true;
+                    }
+                }
+
             } else if (y < height - numGridWidth && y > height - 2 * numGridWidth) {
                 //数字候选区
+                delCandicateNum(x,y);
+            }
+        }
+        invalidate();
+    }
+
+    private IsWinCallBack listener;
+
+    public void setIsWinCallBack( IsWinCallBack listener){
+        this.listener = listener;
+    }
+
+    private boolean isWin(){
+        boolean colorWinflag = true;
+        if(!gameFlag){
+            //有颜色数独
+            colorWinflag =  sudoku.isColorWin();
+        }
+        colorWinflag = sudoku.isNumWin() && colorWinflag;
+        if(colorWinflag){
+            //获得胜利
+            if(listener != null){
+                listener.winner();
             }
         }
 
-
-        invalidate();
+        return colorWinflag;
     }
+
 
     private void click(float x, float y) {
         if (y < numGridWidth * 9) {
@@ -142,10 +205,18 @@ public class SudokuMap extends View {
                 clickColorKeyBoard(x,y);
             } else if (y < height - 2 * numGridWidth && y > height - 3 * numGridWidth) {
                 //数字候选区上
-                clickCandicateNum(x , y );
+                clickCandicateNum(x, y);
+                if(isWin()){
+                    Log.e("xhc","颜色和数字数独都赢了");
+                    winFlag = true;
+                }
             } else if (y < height - 3 * numGridWidth && y > height - 4 * numGridWidth) {
                 //颜色候选区上
-                clickCandicateColor(x , y );
+                clickCandicateColor(x, y);
+                if(isWin()){
+                    Log.e("xhc","颜色和数字数独都赢了");
+                    winFlag = true;
+                }
             }
         } else {
             if (y > height - numGridWidth) {
@@ -153,21 +224,41 @@ public class SudokuMap extends View {
                 clickNumKeyBoard(x,y);
             } else if (y < height - numGridWidth && y > height - 2 * numGridWidth) {
                 //数字候选区
-                clickCandicateNum(x , y );
+                clickCandicateNum(x, y);
+                if(isWin()){
+                    Log.e("xhc","颜色和数字数独都赢了");
+                    winFlag = true;
+                }
             }
         }
 
         invalidate();
     }
 
+    //删除掉选择的数字
+    private void deleDecidedNum(){
+        if(choiseNode == null) return;
+        choiseNode.setUserNum(0);
+    }
+
+    //删除掉选择的颜色
+    private void deleDecidedColor(){
+        if(choiseNode == null) return;
+        choiseNode.setUserColor(0);
+    }
+
+
     /**
      * 单击数字键盘就是往候选区加数字
      */
     private void clickNumKeyBoard(float x , float y){
+
         if(y < height - numGridWidth) return ;
         if(choiseNode == null)return ;
         int num = (int)Math.ceil(x / numGridWidth);
-        choiseNode.putCandicateNum(num);
+        if(choiseNode.isNumFlag()){
+            choiseNode.putCandicateNum(num);
+        }
     }
 
     /**
@@ -180,7 +271,48 @@ public class SudokuMap extends View {
         if(choiseNode == null) return ;
         if(y < height - 2 * numGridWidth || y > height - numGridWidth) return ;
         int color = (int)Math.ceil(x / numGridWidth);
-        choiseNode.putCandicateColor(color);
+        if(choiseNode.isColorFlag()){
+            choiseNode.putCandicateColor(color);
+        }
+    }
+
+    private void delCandicateNum(float x , float y){
+        if (choiseNode == null) return ;
+        int where = (int)Math.ceil(x / numGridWidth) ;
+        if(where > choiseNode.getCountNum()) return ;
+        int num = 0;
+        //找到候选数是哪个
+        for(int i = 0 ;i < choiseNode.getCandidateNum().length ; ++ i){
+            if(choiseNode.getCandidateNum()[i] == 0 ) continue;
+            where -- ;
+            if(where == 0){
+                num = choiseNode.getCandidateNum()[i];
+            }
+        }
+        if(num < 1 || num > 9) return ;
+        choiseNode.removeCandicateNum(num);
+    }
+
+    /**
+     * 删除候选区颜色
+     * @param x
+     * @param y
+     */
+    private void delCandicateColor(float x , float y){
+        if (choiseNode == null) return ;
+        int where = (int)Math.ceil(x / numGridWidth) ;
+        if(where > choiseNode.getCountColor()) return ;
+        int color = 0;
+        //找到候选数是哪个
+        for(int i = 0 ;i < choiseNode.getCandidateColor().length ; ++ i){
+            if(choiseNode.getCandidateColor()[i] == 0 ) continue;
+            where -- ;
+            if(where == 0){
+                color = choiseNode.getCandidateColor()[i];
+            }
+        }
+        if(color < 1 || color > 9) return ;
+        choiseNode.removeCandicateColor(color);
     }
 
     /**
@@ -190,6 +322,7 @@ public class SudokuMap extends View {
      */
     private void clickCandicateNum(float x , float y){
         if (choiseNode == null) return ;
+
         int where = (int)Math.ceil(x / numGridWidth) ;
         if(where > choiseNode.getCountNum()) return ;
 
@@ -265,6 +398,64 @@ public class SudokuMap extends View {
 
         drawCandidateNum(canvas);
         drawCandidateColor(canvas);
+        checkConfirm(canvas);
+    }
+
+
+    //检查填入的数字是否符合要求
+    private void checkConfirm(Canvas canvas){
+        if(!checkFlag)return;
+        if(!gameFlag){
+            //有颜色数独
+
+            for(int i = 0 ; i < nodes.length ; ++ i){
+                for(int j = 0 ; j < nodes[i].length ; ++ j){
+
+                    if(nodes[i][j].getUserNum() != 0){
+                        if(!sudoku.isUserNumConform(i,j,nodes[i][j].getUserNum())){
+                            //这个是不符合填入的数字
+                            drawWrong(canvas,j*numGridWidth,i*numGridWidth);
+                        }
+                    }
+                    if(nodes[i][j].getUserColor() != 0){
+                        if(!sudoku.isUserColorConform(i,j,nodes[i][j].getUserColor())){
+                            //这个是不符合填入的颜色
+                            drawWrong(canvas,j*numGridWidth,i*numGridWidth);
+                        }
+                    }
+                }
+            }
+        }
+        else{
+
+            for(int i = 0 ; i < nodes.length ; ++ i){
+                for(int j = 0 ; j < nodes[i].length ; ++ j){
+
+                    if(nodes[i][j].getUserNum() != 0){
+                        if(!sudoku.isUserNumConform(i,j,nodes[i][j].getUserNum())){
+                            //这个是不符合填入的数字
+                            drawWrong(canvas,j*numGridWidth,i*numGridWidth);
+                        }
+                    }
+
+                }
+            }
+        }
+
+    }
+
+    /**
+     *
+     * @param canvas
+     * @param x 屏幕上的坐标
+     * @param y 坐标
+     */
+    private void drawWrong(Canvas canvas , float x , float y){
+        paint.setColor(Color.parseColor("#FF2929"));
+        int size = 10* dp_1;
+        canvas.drawLine(x + size , y + size, x + numGridWidth - size, y + numGridWidth - size,paint);
+        canvas.drawLine(x + size, y + numGridWidth - size, x + numGridWidth - size, y +size,paint);
+
     }
 
     //画一个被选择个格子
@@ -349,6 +540,7 @@ public class SudokuMap extends View {
             count++;
             tempX += candicateWidth;
             if (count == 3 || count == 6) {
+                //换行
                 tempY += candicateWidth;
                 tempX = positionX;
             }
@@ -480,8 +672,10 @@ public class SudokuMap extends View {
      * @param positionY 坐标
      */
     private void drawCandicateNumSmall(Canvas canvas, int num, float positionX, float positionY) {
+
         paint.setColor(Color.argb(255, 0, 0, 0));
         paint.setTextSize(dp_1 * 10);
+
         float textWidth = paint.measureText(num + "");
         Paint.FontMetrics fm = paint.getFontMetrics();
         float textHeight = (float) (Math.ceil(fm.descent - fm.ascent));

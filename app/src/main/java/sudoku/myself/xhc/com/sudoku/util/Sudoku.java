@@ -73,6 +73,40 @@ public class Sudoku {
         return array;
     }
 
+
+    /**
+     * 判断数字数独是否赢了
+     * @return
+     */
+    public boolean isNumWin(){
+
+        for(int i = 0 ;i < 9 ; ++ i){
+            for(int j = 0 ; j < 9 ; ++ j){
+                if(array[i][j].isNumFlag() && array[i][j].getUserNum() == 0 )return false;
+                if(array[i][j].isNumFlag()){
+                    if(isUserNumConform(i,j,array[i][j].getUserNum())){
+                        //符合要求
+                        continue;
+                    }
+                    else return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public boolean isColorWin(){
+        for(int i = 0 ;i < 9 ; ++ i){
+            for(int j = 0 ; j < 9 ; ++ j){
+                if(array[i][j].isColorFlag() && array[i][j].getUserColor() == 0)return false;
+                if(isUserColorConform(i,j,array[i][j].getUserColor()))continue;
+                else return false;
+            }
+        }
+
+        return true;
+    }
+
     private Node[][] getColorSudoku() {
         randomSetColor();
         for (int i = 0; i < array.length; ++i) {
@@ -126,7 +160,7 @@ public class Sudoku {
     }
 
     //组合数独 最好用一个线程来调用
-    public Node[][] getGameCombinationSudoku(int level) {
+    public synchronized Node[][] getGameCombinationSudoku(int level) {
         getNormalSudoku();
         getColorSudoku();
         removeNumSudoku(level);
@@ -135,7 +169,7 @@ public class Sudoku {
     }
 
     //最好用一个线程来调用
-    public Node[][] getGameNormal(int level) {
+    public synchronized Node[][] getGameNormal(int level) {
         if (level < 1 || level > 5) {
             return null;
         }
@@ -498,6 +532,7 @@ public class Sudoku {
         }
             /* 同行比较 */
         for (int j = 0; j < array.length; j++) {
+            if(j == y)continue;
             if (array[x][j].isNumFlag()) {
                 if (array[x][j].getUserNum() == num) {
                     return false;
@@ -512,6 +547,7 @@ public class Sudoku {
 
         /* 同列比较 */
         for (int i = 0; i < array.length; i++) {
+            if(x == i)continue;
             if (array[i][y].isNumFlag()) {
                 if (array[i][y].getUserNum() == num) {
                     return false;
@@ -532,6 +568,7 @@ public class Sudoku {
         for (int i = whereX * sqrtLength; i < whereX * sqrtLength + sqrtLength; i++) {
             for (int j = whereY * sqrtLength; j < whereY * sqrtLength
                     + sqrtLength; j++) {
+                if(i == x && j == y) continue;
                 if (array[i][j].isNumFlag()) {
                     if (array[i][j].getUserNum() == num) {
                         return false;
