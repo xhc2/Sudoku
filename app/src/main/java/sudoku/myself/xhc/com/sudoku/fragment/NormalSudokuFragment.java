@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import sudoku.myself.xhc.com.sudoku.R;
@@ -17,37 +18,65 @@ import sudoku.myself.xhc.com.sudoku.util.Sudoku;
 /**
  * Created by xhc on 2016/2/13.
  */
-public class NormalSudokuFragment extends Fragment implements View.OnClickListener{
+public class NormalSudokuFragment extends Fragment implements View.OnClickListener {
 
-    private TextView tv ;
+    private TextView tv;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        startActivity(new Intent(getActivity(), GameActivity.class));
+//        startActivity(new Intent(getActivity(), GameActivity.class));
 
 
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.normal_sudoku_layout,container,false);
+        return inflater.inflate(R.layout.normal_sudoku_layout, container, false);
 
     }
+
+    private Button btLevel1 , btLevel2,btLevel3 , btLevel4,btLevel5 ;
+
 
     @Override
-    public void onViewCreated(View view,  Bundle savedInstanceState) {
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        btLevel1 = (Button) view.findViewById(R.id.bt_level1);
+        btLevel2 = (Button) view.findViewById(R.id.bt_level2);
+        btLevel3 = (Button) view.findViewById(R.id.bt_level3);
+        btLevel4 = (Button) view.findViewById(R.id.bt_level4);
+        btLevel5 = (Button) view.findViewById(R.id.bt_level5);
 
-
+        init();
     }
 
+    private void init(){
+        btLevel1.setOnClickListener(this);
+        btLevel2.setOnClickListener(this);
+        btLevel3.setOnClickListener(this);
+        btLevel4.setOnClickListener(this);
+        btLevel5.setOnClickListener(this);
+    }
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.test:
-
+       Intent intent =  new Intent(getContext(),GameActivity.class);
+        switch (v.getId()) {
+            case R.id.bt_level1:
+                startActivity(intent);
                 break;
-
+            case R.id.bt_level2:
+                startActivity(intent);
+                break;
+            case R.id.bt_level3:
+                startActivity(intent);
+                break;
+            case R.id.bt_level4:
+                startActivity(intent);
+                break;
+            case R.id.bt_level5:
+                startActivity(intent);
+                break;
         }
     }
 }

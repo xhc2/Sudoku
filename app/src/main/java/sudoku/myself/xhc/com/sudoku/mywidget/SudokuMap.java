@@ -84,10 +84,18 @@ public class SudokuMap extends View {
         textPaint.setStyle(Paint.Style.FILL);
         dp_1 = DensityUtils.dip2px(context, 1);
         //测试
-        sudoku = Sudoku.getInstance();
-        nodes = sudoku.getGameCombinationSudoku(5);
+
 
     }
+    public void setLevel(int level){
+        sudoku = Sudoku.getInstance();
+//        sudoku = new Sudoku();
+        sudoku.clear();
+        nodes = sudoku.getGameCombinationSudoku(3);
+        invalidate();
+    }
+
+
 
 //    @Override
 //    public boolean onTouchEvent(MotionEvent event) {
@@ -467,6 +475,7 @@ public class SudokuMap extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         canvas.drawARGB(255, 218, 218, 218);
+        if(nodes == null) return ;
         drawLineMap(canvas);
         drawKeyBoard(canvas);
 

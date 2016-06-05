@@ -29,6 +29,7 @@ public class Node {
     private int countNum = 0 ;
     //记录候选区中的颜色的个数
     private int countColor = 0;
+
     //清除一切状态
     public void clear(){
         numFlag = false;

@@ -24,6 +24,7 @@ public class GameActivity extends Activity implements IsWinCallBack {
         tvLable = (TextView)findViewById(R.id.tv_label);
         map = (SudokuMap) findViewById(R.id.map);
         map.setIsWinCallBack(this);
+        map.setLevel(5);
     }
 
 

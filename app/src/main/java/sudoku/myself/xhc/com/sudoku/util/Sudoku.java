@@ -1,6 +1,8 @@
 package sudoku.myself.xhc.com.sudoku.util;
 
 
+import android.util.Log;
+
 import sudoku.myself.xhc.com.sudoku.bean.Node;
 import sudoku.myself.xhc.com.sudoku.bean.RecordNodeColor;
 import sudoku.myself.xhc.com.sudoku.bean.RecordNodeNum;
@@ -23,7 +25,7 @@ public class Sudoku {
     private RecordNodeNum[][] recordNodeNum = new RecordNodeNum[9][9];
     private RecordNodeColor[][] recordNodeColors = new RecordNodeColor[9][9];
     private int orderNum = 0;
-
+    private boolean clearFlag = false;
     private Sudoku() {
 
         for (int i = 0; i < array.length; ++i) {
@@ -36,7 +38,11 @@ public class Sudoku {
 
     }
 
-    public static Sudoku getInstance() {
+    public synchronized static Sudoku getInstance() {
+        if(sudoku == null){
+            sudoku = new Sudoku();
+        }
+
         return sudoku;
     }
 
@@ -47,8 +53,11 @@ public class Sudoku {
      */
     private Node[][] getNormalSudoku() {
         randomSetNum();
-        for (int i = 0; i < array.length; ++i) {
-            for (int j = 0; j < array[i].length; ++j) {
+        for (int i = 0; i < array.length && !clearFlag; ++i) {
+            Log.e("xhc"," i "+i);
+            for (int j = 0; j < array[i].length && !clearFlag; ++j) {
+                Log.e("xhc","j -> "+j);
+
                 if (array[i][j].isNumFlag()) {
                     int num = getOrderNum();
                     if (recordNodeNum[i][j].setRecordNodeNum(num) && isSystemNumConform(i, j, num)) {
@@ -108,10 +117,13 @@ public class Sudoku {
     }
 
     private Node[][] getColorSudoku() {
+        long startTime = System.currentTimeMillis();
         randomSetColor();
-        for (int i = 0; i < array.length; ++i) {
-            for (int j = 0; j < array[i].length; ++j) {
+        for (int i = 0; i < array.length && !clearFlag; ++i) {
+            for (int j = 0; j < array[i].length && !clearFlag; ++j) {
+
                 if (array[i][j].isColorFlag()) {
+                    //被挖掉
                     int num = getOrderNum();
                     if (recordNodeColors[i][j].setRecordColor(num) && isSystemColorConform(i, j, num)) {
                         array[i][j].setSystemColor(num);
@@ -132,13 +144,18 @@ public class Sudoku {
             }
         }
         resetColorFlag();
+        Log.e("xhc",( System.currentTimeMillis()- startTime )+"");
         return array;
     }
 
     public void clear(){
+        clearFlag = true;
+        orderNum = 0;
         for (int i = 0 ;i < array.length ; ++i ){
             for (int j = 0 ; j < array[i].length ; ++ j){
                 array[i][j].clear();
+                recordNodeColors[i][j].clear();
+                recordNodeNum[i][j].clear();
             }
         }
     }
@@ -159,8 +176,12 @@ public class Sudoku {
         }
     }
 
-    //组合数独 最好用一个线程来调用
+    //组合数独 最好用一个线程来调用 ，并且是不同level
     public synchronized Node[][] getGameCombinationSudoku(int level) {
+        clearFlag = false;
+        if (level < 1 || level > 5) {
+            return null;
+        }
         getNormalSudoku();
         getColorSudoku();
         removeNumSudoku(level);
@@ -168,8 +189,9 @@ public class Sudoku {
         return array;
     }
 
-    //最好用一个线程来调用
+    //最好用一个线程来调用 获取普通数独
     public synchronized Node[][] getGameNormal(int level) {
+        clearFlag = false;
         if (level < 1 || level > 5) {
             return null;
         }
