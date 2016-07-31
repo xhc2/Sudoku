@@ -4,5 +4,37 @@
     android:layout_height="match_parent">
 
 
+    <Button
+        android:id="@+id/bt_level1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="一等难度"
+        />
+    <Button
+        android:id="@+id/bt_level2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="二等难度"
+        />
+    <Button
+        android:id="@+id/bt_level3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="三等难度"
+        />
+
+    <Button
+        android:id="@+id/bt_level4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="四等难度"
+        />
+
+    <Button
+        android:id="@+id/bt_level5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="五等难度"
+        />
 
 </LinearLayout>

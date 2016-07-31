@@ -1,6 +1,7 @@
 package sudoku.myself.xhc.com.sudoku.util;
 
 
+
 import android.util.Log;
 
 import sudoku.myself.xhc.com.sudoku.bean.Node;
@@ -108,7 +109,7 @@ public class Sudoku {
         for(int i = 0 ;i < 9 ; ++ i){
             for(int j = 0 ; j < 9 ; ++ j){
                 if(array[i][j].isColorFlag() && array[i][j].getUserColor() == 0)return false;
-                if(isUserColorConform(i,j,array[i][j].getUserColor()))continue;
+                if(isUserColorConform(i, j, array[i][j].getUserColor()))continue;
                 else return false;
             }
         }
@@ -144,7 +145,7 @@ public class Sudoku {
             }
         }
         resetColorFlag();
-        Log.e("xhc",( System.currentTimeMillis()- startTime )+"");
+        Log.e("xhc", (System.currentTimeMillis() - startTime) + "");
         return array;
     }
 
@@ -184,8 +185,9 @@ public class Sudoku {
         }
         getNormalSudoku();
         getColorSudoku();
-        removeNumSudoku(level);
         removeColorSudoku(level);
+        removeNumSudoku(level);
+
         return array;
     }
 

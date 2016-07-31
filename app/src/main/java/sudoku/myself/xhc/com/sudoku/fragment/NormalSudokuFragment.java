@@ -13,6 +13,7 @@ import android.widget.TextView;
 import sudoku.myself.xhc.com.sudoku.R;
 import sudoku.myself.xhc.com.sudoku.activity.GameActivity;
 import sudoku.myself.xhc.com.sudoku.bean.Node;
+import sudoku.myself.xhc.com.sudoku.util.Constant;
 import sudoku.myself.xhc.com.sudoku.util.Sudoku;
 
 /**
@@ -25,8 +26,6 @@ public class NormalSudokuFragment extends Fragment implements View.OnClickListen
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-//        startActivity(new Intent(getActivity(), GameActivity.class));
 
 
     }
@@ -61,20 +60,26 @@ public class NormalSudokuFragment extends Fragment implements View.OnClickListen
     @Override
     public void onClick(View v) {
        Intent intent =  new Intent(getContext(),GameActivity.class);
+        intent.putExtra(Constant.type, Constant.normal);
         switch (v.getId()) {
             case R.id.bt_level1:
+                intent.putExtra(Constant.level,1);
                 startActivity(intent);
                 break;
             case R.id.bt_level2:
+                intent.putExtra(Constant.level,2);
                 startActivity(intent);
                 break;
             case R.id.bt_level3:
+                intent.putExtra(Constant.level,3);
                 startActivity(intent);
                 break;
             case R.id.bt_level4:
+                intent.putExtra(Constant.level,4);
                 startActivity(intent);
                 break;
             case R.id.bt_level5:
+                intent.putExtra(Constant.level,5);
                 startActivity(intent);
                 break;
         }

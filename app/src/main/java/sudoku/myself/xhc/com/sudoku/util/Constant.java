@@ -1,7 +1,5 @@
 package sudoku.myself.xhc.com.sudoku.util;
 
-import android.graphics.Color;
-
 /**
  * Created by xhc on 2016/2/15.
  * <p/>
@@ -16,5 +14,15 @@ import android.graphics.Color;
 public class Constant {
 
     public static final int Color[] = new int[]{0xAAFFFFFF, 0xAAFF0000, 0xAAFFA500, 0xAAFFFF00, 0xAA00FF00, 0xAA007FFF, 0xAA0000FF, 0xAA8B00FF, 0xAADA6DDA};
+
+    public static final String type = "type";
+
+    public static final String level = "level";
+    //普通模式
+    public static final int normal = 1;
+    //困难模式
+    public static final int harder = 2;
+    //闯关模式
+    public static final int screening = 3;
 
 }

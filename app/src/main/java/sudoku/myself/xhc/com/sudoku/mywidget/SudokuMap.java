@@ -75,6 +75,7 @@ public class SudokuMap extends View {
     }
 
     private void init(Context context) {
+
         paint = new Paint();
         paint.setAntiAlias(true);
         paint.setStyle(Paint.Style.STROKE);
@@ -87,37 +88,25 @@ public class SudokuMap extends View {
 
 
     }
-    public void setLevel(int level){
+    public void setHarderLevel(int level){
+        gameFlag = false;
         sudoku = Sudoku.getInstance();
-//        sudoku = new Sudoku();
         sudoku.clear();
-        nodes = sudoku.getGameCombinationSudoku(3);
+        nodes = sudoku.getGameCombinationSudoku(level);
         invalidate();
     }
 
+    public void setNormalLevel(int level){
+        gameFlag = true;
+        sudoku = Sudoku.getInstance();
+        sudoku.clear();
+        nodes = sudoku.getGameNormal(level);
+        invalidate();
+    }
 
-
-//    @Override
-//    public boolean onTouchEvent(MotionEvent event) {
-//
-//        switch (event.getAction()) {
-//            case MotionEvent.ACTION_DOWN:
-//                downX = event.getX();
-//                downY = event.getY();
-//                downTime = Calendar.getInstance().getTimeInMillis();
-//                break;
-//            case MotionEvent.ACTION_UP:
-//                upX = event.getX();
-//                upY = event.getY();
-//                upTime = Calendar.getInstance().getTimeInMillis();
-//                if (upTime - downTime >= LONGCLICKTIME)
-//                    longPress(upX, upY);
-//                else
-//                    click(upX, upY);
-//                break;
-//        }
-//        return true;
-//    }
+    public Node[][] getNodes(){
+        return nodes;
+    }
 
 
     @Override

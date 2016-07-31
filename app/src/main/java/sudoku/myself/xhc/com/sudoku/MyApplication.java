@@ -12,6 +12,6 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        CrashWoodpecker.fly().to(this);
+//        CrashWoodpecker.fly().to(this);
     }
 }
