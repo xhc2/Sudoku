@@ -1,9 +1,14 @@
 package sudoku.myself.xhc.com.sudoku.db;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.UpdateBuilder;
+import com.j256.ormlite.stmt.Where;
+
+import java.util.List;
 
 import sudoku.myself.xhc.com.sudoku.bean.Record;
 
@@ -18,48 +23,74 @@ public class RecordDao {
     public RecordDao(Context context)
     {
         this.context = context;
+
         try
         {
             helper = DataBaseHelper.getHelper(context);
             recordDaoOpe = helper.getDao(Record.class);
         } catch (Exception e)
         {
+            Log.e("xhc","创建错误？-->"+e.getMessage());
             e.printStackTrace();
         }
     }
 
     /**
-     * 增加一个用户
-     *
-     * @param user
+     * @param record
+     * 同一个leveltype ，level数据库中值保存一份
      */
-    public void add(Record user)
+    public void addOrUpdate(Record record)
     {
         try
         {
-            recordDaoOpe.create(user);
+            if(record == null){
+                return ;
+            }
+
+            List<Record> list = getRecordFromTypeAndLevel(record.getLevelType() , record.getLevel());
+
+            if(list != null && list.size() > 0){
+                //已经有了。
+                update(record);
+            }
+            else{
+                recordDaoOpe.create(record);
+            }
+
         } catch (Exception e)
         {
+            Log.e("xhc","保存错误-> "+e.getMessage());
             e.printStackTrace();
         }
 
     }
 
-    public Record get(int id)
-    {
-        try
-        {
-            return recordDaoOpe.queryForId(id);
-        } catch (Exception e)
-        {
-            e.printStackTrace();
+    public void update(Record record){
+        try{
+            UpdateBuilder b = recordDaoOpe.updateBuilder();
+            b.where().eq("levelType", record.getLevelType()).and();
+            b.where().eq("level", record.getLevel());
+            b.updateColumnValue("nodes", record.getNodes());
+            b.updateColumnValue("time",record.getTime());
+            b.updateColumnValue("startTime", record.getStartTime());
+            b.update();
+        }catch(Exception e){
+
         }
-        return null;
     }
 
-    public Record getRecordFromTypeAndLevel(String levelType , int level){
 
-        QueryBuilder builder = recordDaoOpe.queryBuilder() ;
+    public List<Record> getRecordFromTypeAndLevel(int levelType , int level){
+        try{
+            Log.e("xhc","查询 "+levelType+" level -> "+ level);
+            QueryBuilder builder = recordDaoOpe.queryBuilder() ;
+            Where<Record , Integer> where = builder.where();
+            where.eq("levelType",levelType).and();
+            where.eq("level", level);
+            return where.query();
+        }catch(Exception e){
+            Log.e("xhc",e.getMessage());
+        }
         return null;
     }
 

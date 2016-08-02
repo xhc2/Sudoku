@@ -1,7 +1,6 @@
 package sudoku.myself.xhc.com.sudoku.util;
 
 
-
 import android.util.Log;
 
 import sudoku.myself.xhc.com.sudoku.bean.Node;
@@ -47,6 +46,18 @@ public class Sudoku {
         return sudoku;
     }
 
+    public void setNodes( Node[][] array){
+        this.array = array;
+
+            for(int x = 0 ; x < array.length ; ++ x ){
+                String str ="";
+                for(int y = 0 ; y < array[x].length ; ++ y){
+                    str += array[x][y]+" ";
+                }
+                Log.e("xhc",str);
+            }
+    }
+
     /**
      * 获取一个只有数字的数独
      *
@@ -55,9 +66,7 @@ public class Sudoku {
     private Node[][] getNormalSudoku() {
         randomSetNum();
         for (int i = 0; i < array.length && !clearFlag; ++i) {
-            Log.e("xhc"," i "+i);
             for (int j = 0; j < array[i].length && !clearFlag; ++j) {
-                Log.e("xhc","j -> "+j);
 
                 if (array[i][j].isNumFlag()) {
                     int num = getOrderNum();
@@ -145,7 +154,7 @@ public class Sudoku {
             }
         }
         resetColorFlag();
-        Log.e("xhc", (System.currentTimeMillis() - startTime) + "");
+        Log.e("xhc", "生成颜色数独的时间-> "+(System.currentTimeMillis() - startTime) + "");
         return array;
     }
 

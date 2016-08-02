@@ -1,9 +1,5 @@
 package sudoku.myself.xhc.com.sudoku.bean;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * Created by xhc on 2016/2/15.
  * 棋盘上的每一个点的数据结构
@@ -165,11 +161,11 @@ public class Node {
                 "numFlag=" + numFlag +
                 ", systemNum=" + systemNum +
                 ", userNum=" + userNum +
-                ", candidateNum=" + Arrays.toString(candidateNum) +
+             /*   ", candidateNum=" + Arrays.toString(candidateNum) +*/
                 ", colorFlag=" + colorFlag +
                 ", systemColor=" + systemColor +
                 ", userColor=" + userColor +
-                ", candidateColor=" + Arrays.toString(candidateColor) +
+            /*    ", candidateColor=" + Arrays.toString(candidateColor) +*/
                 ", countNum=" + countNum +
                 ", countColor=" + countColor +
                 '}';

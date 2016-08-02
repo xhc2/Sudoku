@@ -18,9 +18,9 @@ public class Record {
     @DatabaseField(columnName = "nodes")
     private String nodes;//Node[][]转换成的json
     @DatabaseField(columnName = "level")
-    private String level;
+    private int level;
     @DatabaseField(columnName = "levelType")
-    private String levelType;
+    private int levelType;
     //已经所花的时间
     @DatabaseField(columnName = "time")
     private long time;
@@ -36,19 +36,19 @@ public class Record {
         this.nodes = nodes;
     }
 
-    public String getLevel() {
+    public int getLevel() {
         return level;
     }
 
-    public void setLevel(String level) {
+    public void setLevel(int level) {
         this.level = level;
     }
 
-    public String getLevelType() {
+    public int getLevelType() {
         return levelType;
     }
 
-    public void setLevelType(String levelType) {
+    public void setLevelType(int levelType) {
         this.levelType = levelType;
     }
 

@@ -12,9 +12,12 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.google.gson.Gson;
+
 import java.util.Calendar;
 
 import sudoku.myself.xhc.com.sudoku.bean.Node;
+import sudoku.myself.xhc.com.sudoku.bean.Record;
 import sudoku.myself.xhc.com.sudoku.debugutil.util.DensityUtils;
 import sudoku.myself.xhc.com.sudoku.inter.IsWinCallBack;
 import sudoku.myself.xhc.com.sudoku.util.Constant;
@@ -85,9 +88,28 @@ public class SudokuMap extends View {
         textPaint.setStyle(Paint.Style.FILL);
         dp_1 = DensityUtils.dip2px(context, 1);
         //测试
-
-
     }
+
+    public void setHistory(Record record){
+        if(record == null ){
+            return ;
+        }
+        sudoku = Sudoku.getInstance();
+        sudoku.clear();
+        Node[][] tempArray = new Gson().fromJson(record.getNodes() , Node[][].class);
+        sudoku.setNodes(tempArray);
+        this.nodes = tempArray;
+        if(record.getLevelType() == Constant.harder){
+            gameFlag = false;
+        }
+        else if(record.getLevelType() == Constant.normal){
+            gameFlag = true;
+        }
+        else{
+
+        }
+    }
+
     public void setHarderLevel(int level){
         gameFlag = false;
         sudoku = Sudoku.getInstance();
@@ -576,6 +598,7 @@ public class SudokuMap extends View {
                     drawCandicateColorInGrid(canvas, node.getCandidateColor(), positionX, positionY);
                 } else /*用户没有动过这个格子*/;
             } else {
+
                 drawNormalColor(canvas, Constant.Color[node.getSystemColor() - 1], positionX, positionY);
             }
         }
@@ -746,15 +769,16 @@ public class SudokuMap extends View {
      */
     private void drawCandicateNumSmall(Canvas canvas, int num, float positionX, float positionY) {
 
-        paint.setColor(Color.argb(255, 0, 0, 0));
-        paint.setTextSize(dp_1 * 10);
-
-        float textWidth = paint.measureText(num + "");
-        Paint.FontMetrics fm = paint.getFontMetrics();
+        textPaint.setColor(Color.argb(255, 0, 0, 0));
+        textPaint.setTextSize(dp_1 * 10);
+        textPaint.setStrokeWidth(1);
+        textPaint.setTypeface(Typeface.DEFAULT);
+        float textWidth = textPaint.measureText(num + "");
+        Paint.FontMetrics fm = textPaint.getFontMetrics();
         float textHeight = (float) (Math.ceil(fm.descent - fm.ascent));
         positionX = positionX + candicateWidth / 2 - textWidth / 2;
         positionY = positionY + candicateWidth / 2 - textHeight / 2 + textHeight - dp_1;
-        canvas.drawText(num + "", positionX, positionY, paint);
+        canvas.drawText(num + "", positionX, positionY, textPaint);
     }
 
     private void drawCandicateColorSmall(Canvas canvas, int color, float positionX, float positionY) {
