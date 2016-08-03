@@ -51,9 +51,11 @@ public class RecordDao {
 
             if(list != null && list.size() > 0){
                 //已经有了。
+                Log.e("xhc","已经有了更新-》 "+record.toString());
                 update(record);
             }
             else{
+                Log.e("xhc","没有直接保存-> "+record.toString());
                 recordDaoOpe.create(record);
             }
 
@@ -68,8 +70,7 @@ public class RecordDao {
     public void update(Record record){
         try{
             UpdateBuilder b = recordDaoOpe.updateBuilder();
-            b.where().eq("levelType", record.getLevelType()).and();
-            b.where().eq("level", record.getLevel());
+            b.where().eq("levelType", record.getLevelType()).and().eq("level", record.getLevel());
             b.updateColumnValue("nodes", record.getNodes());
             b.updateColumnValue("time",record.getTime());
             b.updateColumnValue("startTime", record.getStartTime());
@@ -79,6 +80,15 @@ public class RecordDao {
         }
     }
 
+
+    public List<Record> getAllRecord(){
+        try{
+            return recordDaoOpe.queryForAll();
+        }catch(Exception e){
+
+        }
+            return null;
+    }
 
     public List<Record> getRecordFromTypeAndLevel(int levelType , int level){
         try{

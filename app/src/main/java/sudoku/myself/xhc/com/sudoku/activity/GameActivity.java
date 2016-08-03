@@ -39,13 +39,18 @@ public class GameActivity extends Activity implements IsWinCallBack {
         Intent intent = getIntent();
         type = intent.getIntExtra(Constant.type , -1);
         level = intent.getIntExtra(Constant.level , -1);
+        Log.e("xhc" , " type -> "+type+" level ->  "+level);
         if(type == -1 || level == -1){
             finish();
             return ;
         }
 
+        List<Record> list = dao.getAllRecord();
+        Log.e("xhc" , " list.size -> "+list.size());
+
         List<Record> listRecord = getHistory();
         if(listRecord != null && listRecord.size() > 0){
+            Log.e("xhc" ,"listRecord.size()-> "+listRecord.size());
            Record record = listRecord.get(0);
             map.setHistory(record);
         }
