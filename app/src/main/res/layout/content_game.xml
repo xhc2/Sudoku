@@ -12,12 +12,33 @@
         android:background="#9C9C9C"
         android:layout_height="85dp">
 
+        <ImageView
+            android:id="@+id/header"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_launcher"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            />
+
         <TextView
             android:id="@+id/tv_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="hello world"
+            android:layout_centerInParent="true"
+            android:text="00:12:12"
+            android:textSize="16sp"
+            android:textColor="#D32D36"
             />
+        <Button
+            android:id="@+id/bt_reset"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="重来"
+            />
+
 
     </RelativeLayout>
 

@@ -54,7 +54,7 @@ public class SudokuMap extends View {
     private boolean winFlag = false;
     private Node[][] nodes = new Node[9][9];
     private Sudoku sudoku;
-
+    private int underColor = Color.argb(30 , 0,0,0);
     public SudokuMap(Context context) {
         this(context, null);
     }
@@ -482,9 +482,13 @@ public class SudokuMap extends View {
         choiseNode = nodes[i][j];
     }
 
+    private long startTime ;
+    private long endTime ;
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        startTime = System.currentTimeMillis();
         canvas.drawARGB(255, 218, 218, 218);
         if(nodes == null) return ;
         drawLineMap(canvas);
@@ -496,6 +500,9 @@ public class SudokuMap extends View {
         drawCandidateNum(canvas);
         drawCandidateColor(canvas);
         checkConfirm(canvas);
+        drawXAndY(canvas);
+        endTime = System.currentTimeMillis();
+        Log.e("xhc" , "time -> "+(endTime - startTime));
     }
 
 
@@ -559,9 +566,19 @@ public class SudokuMap extends View {
         RectF rectF = new RectF(choiseX, choiseY, choiseX + numGridWidth, choiseY + numGridWidth);
         paint.setColor(Color.parseColor("#000000"));
         paint.setStyle(Paint.Style.STROKE);
-
         canvas.drawRect(rectF, paint);
+    }
 
+    /**
+     * 画横向和纵向的坐标，便于用户确认
+     */
+    private void drawXAndY(Canvas canvas){
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColor(underColor);
+        RectF rectF = new RectF(0 ,choiseY,width , choiseY+ numGridWidth);
+        canvas.drawRect(rectF, paint);
+        RectF rectF2 = new RectF(choiseX ,0,choiseX + numGridWidth,9 * numGridWidth );
+        canvas.drawRect(rectF2, paint);
     }
 
     /**
@@ -593,26 +610,27 @@ public class SudokuMap extends View {
             if (node.isColorFlag()) {
                 //被挖掉
                 if (node.getUserColor() != 0) {
-                    drawNormalColor(canvas, Constant.Color[node.getUserColor() - 1], positionX, positionY);
+                    drawNormalColor(canvas, Constant.Color[node.getUserColor() - 1], positionX, positionY ,USERCOLOR);
                 } else if (node.haveCandicateColor()) {
                     drawCandicateColorInGrid(canvas, node.getCandidateColor(), positionX, positionY);
                 } else /*用户没有动过这个格子*/;
             } else {
 
-                drawNormalColor(canvas, Constant.Color[node.getSystemColor() - 1], positionX, positionY);
+                drawNormalColor(canvas, Constant.Color[node.getSystemColor() - 1], positionX, positionY , SYSTEMCOLOR);
             }
         }
         if (node.isNumFlag()) {
             //被挖掉
             if (node.getUserNum() != 0) {
-                drawNormalNumber(canvas, textPaint, node.getUserNum(), positionX, positionY);
+                drawNormalNumber(canvas, textPaint, node.getUserNum(), positionX, positionY , false);
             } else if (node.haveCandicateNum()) {
                 //画候选区的数字画在格子中
                 drawCandicateNumInGrid(canvas, node.getCandidateNum(), positionX, positionY);
             } else  /*用户没有动过这个格子*/;
 
         } else {
-            drawNormalNumber(canvas, textPaint, node.getSystemNum(), positionX, positionY);
+            //话系统生成的数字
+            drawNormalNumber(canvas, textPaint, node.getSystemNum(), positionX, positionY ,true);
         }
 
 
@@ -730,7 +748,7 @@ public class SudokuMap extends View {
             RectF rectF = new RectF(x + 3 * dp_1, y + 3 * dp_1, x + numGridWidth - 3 * dp_1, y + numGridWidth - 3 * dp_1);
             paint.setColor(Constant.Color[candidates[i] - 1]);
             paint.setStyle(Paint.Style.FILL);
-            canvas.drawRect(rectF, paint);
+            canvas.drawRoundRect(rectF, 8, 8, paint);
             x += numGridWidth;
         }
     }
@@ -740,9 +758,15 @@ public class SudokuMap extends View {
      * 绘画数字 num哪个数字 positionx左上角的x坐标 positiony左上角的y坐标 计算出数字的高度和宽度
      */
     private void drawNormalNumber(Canvas canvas, Paint paint,
-                                  int num, float positionX, float positionY) {
+                                  int num, float positionX, float positionY , boolean systemFlag) {
         paint.setColor(Color.argb(255, 0, 0, 0));
-        paint.setTextSize(dp_1 * 15);
+        if(systemFlag){
+            paint.setTextSize(dp_1 * 15);
+        }
+        else{
+            paint.setTextSize(dp_1 * 20);
+        }
+
         paint.setTypeface(Typeface.DEFAULT_BOLD);
         float textWidth = paint.measureText(num + "");
         Paint.FontMetrics fm = paint.getFontMetrics();
@@ -752,11 +776,30 @@ public class SudokuMap extends View {
         canvas.drawText(num + "", positionX, positionY, paint);
     }
 
-    private void drawNormalColor(Canvas canvas, int color, float positionX, float positionY) {
-        RectF rectF = new RectF(positionX + 3 * dp_1, positionY + 3 * dp_1, positionX + numGridWidth - 3 * dp_1, positionY + numGridWidth - 3 * dp_1);
+    private final int BOARDCOLOR = 0;
+    private final int USERCOLOR = 1;
+    private final int SYSTEMCOLOR = 2;
+
+
+    private void drawNormalColor(Canvas canvas, int color, float positionX, float positionY , int systemFlag) {
+        RectF rectF;
         paint.setColor(color);
         paint.setStyle(Paint.Style.FILL);
-        canvas.drawRect(rectF, paint);
+        if(SYSTEMCOLOR == systemFlag){
+            //系统的小点
+            rectF = new RectF(positionX + 5 * dp_1, positionY + 5 * dp_1, positionX + numGridWidth - 5 * dp_1, positionY + numGridWidth - 5 * dp_1);
+            canvas.drawRoundRect(rectF, 10, 10, paint);
+        }
+        else if(USERCOLOR == systemFlag){
+            //用户输入的大点
+            rectF = new RectF(positionX + 1 * dp_1, positionY + 1 * dp_1, positionX + numGridWidth - 1 * dp_1, positionY + numGridWidth - 1 * dp_1);
+            canvas.drawRoundRect(rectF, 10, 10, paint);
+        }
+        else{
+            rectF = new RectF(positionX + 1 * dp_1, positionY + 1 * dp_1, positionX + numGridWidth - 1 * dp_1, positionY + numGridWidth - 1 * dp_1);
+            canvas.drawRect(rectF, paint);
+        }
+
     }
 
     /**
@@ -796,17 +839,17 @@ public class SudokuMap extends View {
         RectF rect = new RectF(positionX + 3 * dp_1, positionY + 3 * dp_1, positionX + numGridWidth - 3 * dp_1, positionY + numGridWidth - 3 * dp_1);
         textPaint.setColor(Color.parseColor("#C1C1C1"));
         canvas.drawRect(rect, textPaint);
-        drawNormalNumber(canvas, textPaint, num, positionX, positionY);
+        drawNormalNumber(canvas, textPaint, num, positionX, positionY , true);
     }
 
     private void drawKeyBoardNum(Canvas canvas, int num, float positionX, float positionY) {
         textPaint.setColor(Color.parseColor("#727272"));
-        drawNormalNumber(canvas, textPaint, num, positionX, positionY);
+        drawNormalNumber(canvas, textPaint, num, positionX, positionY ,true);
     }
 
     private void drawKeyBoardColor(Canvas canvas, int color, float positionX, float positionY) {
 
-        drawNormalColor(canvas, color, positionX, positionY);
+        drawNormalColor(canvas, color, positionX, positionY ,BOARDCOLOR);
 
     }
 
@@ -817,7 +860,7 @@ public class SudokuMap extends View {
      * @param canvas
      */
     private void drawLineMap(Canvas canvas) {
-        paint.setStrokeWidth((float) (dp_1 * 1.5));
+        paint.setStrokeWidth((float) (dp_1 * 2.5));
         paint.setColor(Color.parseColor("#515151"));
         //四根横向的粗线
         for (int i = 0; i < 4; ++i) {
