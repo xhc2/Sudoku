@@ -24,6 +24,7 @@ public class Record {
     //已经所花的时间
     @DatabaseField(columnName = "time")
     private long time;
+    //开始的时间
     @DatabaseField(columnName = "startTime")
     private long startTime ;
 

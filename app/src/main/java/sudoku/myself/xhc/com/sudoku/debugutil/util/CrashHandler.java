@@ -157,7 +157,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
                 } catch (Exception e) {
                 }
                 Looper.loop();
-            };
+            }
         }.start();
         return false;
     }

@@ -24,5 +24,7 @@ public class Constant {
     public static final int harder = 2;
     //闯关模式
     public static final int screening = 3;
+//    http://192.168.0.6:8080/SuduKu/d/LoginAction
+    public static String BASEURL = "http://192.168.0.6:8080/SuduKu/d/";
 
 }

@@ -44,8 +44,6 @@ public class DebugFile {
     private DebugFile() {
     }
 
-    ;
-
     public static DebugFile getInstance(Context context) {
 
         mContext = context;
@@ -61,10 +59,7 @@ public class DebugFile {
 
 
     private boolean isUseSdcard() {
-        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            return true;
-        }
-        return false;
+        return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
     }
 
     public String getBasePath(){

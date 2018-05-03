@@ -7,4 +7,13 @@
     <string name="harder_sudoku">加强数独</string>
     <string name="fight_sudoku">闯关数独</string>
     <string name="title_activity_game">GameActivity</string>
+
+    <!--登录界面-->
+
+    <string name="input_uer_count">请输入账号</string>
+    <string name="input_pass">请输入密码</string>
+    <string name="login">登录</string>
+    <string name="register">注册</string>
+    <string name="title_activity_register">RegisterActivity</string>
+    <string name="please_input_user_or_pass">请输入账户或者密码!</string>
 </resources>

@@ -90,6 +90,23 @@ public class SudokuMap extends View {
         //测试
     }
 
+    public void setNodeArray( Node[][] nodeArray , int levelType){
+        sudoku = Sudoku.getInstance();
+//        sudoku.clear();
+        sudoku.setNodes(nodeArray);
+        this.nodes = nodeArray;
+        if(levelType == Constant.harder){
+            gameFlag = false;
+        }
+        else if(levelType == Constant.normal){
+            gameFlag = true;
+        }
+        else{
+
+        }
+        invalidate();
+    }
+
     public void setHistory(Record record){
         if(record == null ){
             return ;
@@ -115,15 +132,17 @@ public class SudokuMap extends View {
         sudoku = Sudoku.getInstance();
         sudoku.clear();
         nodes = sudoku.getGameCombinationSudoku(level);
-        invalidate();
+//        invalidate();
     }
+
+
 
     public void setNormalLevel(int level){
         gameFlag = true;
         sudoku = Sudoku.getInstance();
         sudoku.clear();
         nodes = sudoku.getGameNormal(level);
-        invalidate();
+//        invalidate();
     }
 
     public Node[][] getNodes(){

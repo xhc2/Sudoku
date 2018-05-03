@@ -26,8 +26,6 @@ public class XmlUtils {
     private XmlUtils() {
     }
 
-    ;
-
     public static XmlUtils getInstance() {
         if (o != null) {
             return o;

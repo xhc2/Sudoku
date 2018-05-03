@@ -48,19 +48,10 @@ public class Sudoku {
 
     public void setNodes( Node[][] array){
         this.array = array;
-
-//            for(int x = 0 ; x < array.length ; ++ x ){
-//                String str ="";
-//                for(int y = 0 ; y < array[x].length ; ++ y){
-//                    str += array[x][y]+" ";
-//                }
-//                Log.e("xhc",str);
-//            }
     }
 
     /**
      * 获取一个只有数字的数独
-     *
      * @return
      */
     private Node[][] getNormalSudoku() {

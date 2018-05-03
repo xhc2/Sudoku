@@ -29,10 +29,7 @@ public class FileUtil {
 	public static final String POSE_HISTORY = "mnt/sdcard/" + File.separator + "ipear" + File.separator + "posehistory";
 
 	public static boolean isSdcardMounted() {
-		if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-			return true;
-		}
-		return false;
+		return Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState());
 	}
 
 	public static String getHistoryPath() throws IOException {
